@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { interval, Observable, startWith, switchMap } from 'rxjs';
 import { Product } from '../../core/models/Product';
 import { ProductRepository } from '../repository/product-repo';
 
@@ -30,5 +30,12 @@ export class ProductServices extends ProductRepository{
    override updateProduct(id: number, producto: Product): Observable<void> {
      return this.http.put<void>(`http://localhost:8080/products/${id}`,producto)
    }
+
+   getProductsWithShortPolling(intervalTime: number): Observable<Product[]> {
+    return interval(intervalTime).pipe(
+      startWith(0),
+      switchMap(() => this.getProducts()) 
+    );
+  }
 
 }
